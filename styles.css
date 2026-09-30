@@ -1,0 +1,25 @@
+/* The page around the grid. The grid brings its own stylesheet. */
+:root { --ink: #101828; --soft: #475467; --line: #e4e7ec; --page: #f7f8fa; --accent: #123a6b; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 16px 20px; background: var(--page); color: var(--ink);
+  font: 14px/1.5 "Inter", "Segoe UI", system-ui, -apple-system, sans-serif; }
+a { color: var(--accent); }
+.head { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between; margin-bottom: 12px; }
+.head h1 { color: var(--accent); font-size: 22px; margin: 0 0 4px; }
+.lede { color: var(--soft); margin: 0; max-width: 90ch; }
+.badge { color: var(--soft); font-size: 12px; margin: 0; }
+.pill { background: var(--accent); color: #fff; border-radius: 999px; padding: 2px 10px; font-weight: 600; margin-right: 4px; }
+.tiles { min-height: 96px; margin-bottom: 12px; }
+.controls { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+.controls select { font: inherit; padding: 4px 8px; }
+.note { color: var(--soft); font-size: 12px; }
+.charts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
+.chart { height: 280px; background: #fff; border: 1px solid var(--line); border-radius: 6px; }
+.tables { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); gap: 12px; }
+.trade, .summary { height: 560px; background: #fff; border: 1px solid var(--line); border-radius: 6px; overflow: auto; }
+.trade > div, .summary > div { height: 100%; }
+.trade.htmx-request { opacity: 0.5; }
+.trend-data h2 { font-size: 13px; margin: 0 0 6px; color: var(--soft); }
+.trend-data .summary { height: 530px; }
+.foot { color: var(--soft); font-size: 12px; margin-top: 16px; }
+@media (max-width: 1100px) { .charts { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tables { grid-template-columns: 1fr; } }

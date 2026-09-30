@@ -1,0 +1,42 @@
+name: Render the fragments
+
+# The only workflow in this repository. Once a week (and on demand) it reads the saved copy the sibling
+# demo commits, toclocoinc/lattice-grid-demo-uktradeinfo data/snapshot/, over raw.githubusercontent.com,
+# renders the HTML fragments and index.html from it, and commits them when they changed. It makes no
+# request to the HMRC API: the sibling's own job does that. Publishing is GitHub Pages' deploy-from-branch,
+# so the commit is the deploy; there is no publishing workflow here.
+
+on:
+  schedule:
+    - cron: '41 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: render
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node 22 is on the runner image already; the renderer needs nothing installed.
+      - name: Render from the sibling's saved copy
+        run: node tools/render-fragments.mjs
+
+      - name: Commit when the copy changed
+        run: |
+          git add -A fragments index.html
+          if git diff --cached --quiet; then
+            echo "The saved copy is unchanged; nothing to publish."
+            exit 0
+          fi
+          git config user.name "Lattice Demos"
+          git config user.email "tony@demandflow.com"
+          git commit -m "Render the fragments from the saved copy ($(date -u +%Y-%m-%d))"
+          git push

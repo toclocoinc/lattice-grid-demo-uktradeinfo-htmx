@@ -1,0 +1,141 @@
+{
+ "months": [
+  "2024-08",
+  "2024-09",
+  "2024-10",
+  "2024-11",
+  "2024-12",
+  "2025-01",
+  "2025-02",
+  "2025-03",
+  "2025-04",
+  "2025-05",
+  "2025-06",
+  "2025-07",
+  "2025-08",
+  "2025-09",
+  "2025-10",
+  "2025-11",
+  "2025-12",
+  "2026-01",
+  "2026-02",
+  "2026-03",
+  "2026-04",
+  "2026-05",
+  "2026-06",
+  "2026-07"
+ ],
+ "newest": "2026-07",
+ "copyDate": "2026-09-16T10:03:17.525Z",
+ "rowsByMonth": {
+  "2024-08": 5149,
+  "2024-09": 5144,
+  "2024-10": 5192,
+  "2024-11": 5203,
+  "2024-12": 5156,
+  "2025-01": 5127,
+  "2025-02": 5136,
+  "2025-03": 5167,
+  "2025-04": 5155,
+  "2025-05": 5180,
+  "2025-06": 5142,
+  "2025-07": 5173,
+  "2025-08": 5142,
+  "2025-09": 5166,
+  "2025-10": 5188,
+  "2025-11": 5174,
+  "2025-12": 5161,
+  "2026-01": 5117,
+  "2026-02": 5130,
+  "2026-03": 5179,
+  "2026-04": 5181,
+  "2026-05": 5168,
+  "2026-06": 5182,
+  "2026-07": 5153
+ },
+ "partners": [
+  {
+   "name": "United States",
+   "slug": "united-states"
+  },
+  {
+   "name": "Germany",
+   "slug": "germany"
+  },
+  {
+   "name": "China",
+   "slug": "china"
+  },
+  {
+   "name": "Netherlands",
+   "slug": "netherlands"
+  },
+  {
+   "name": "Switzerland",
+   "slug": "switzerland"
+  },
+  {
+   "name": "France",
+   "slug": "france"
+  },
+  {
+   "name": "Belgium",
+   "slug": "belgium"
+  },
+  {
+   "name": "Ireland",
+   "slug": "ireland"
+  },
+  {
+   "name": "Canada",
+   "slug": "canada"
+  },
+  {
+   "name": "Spain",
+   "slug": "spain"
+  },
+  {
+   "name": "Italy",
+   "slug": "italy"
+  },
+  {
+   "name": "Norway",
+   "slug": "norway"
+  },
+  {
+   "name": "Hong Kong",
+   "slug": "hong-kong"
+  },
+  {
+   "name": "Poland",
+   "slug": "poland"
+  },
+  {
+   "name": "Turkey",
+   "slug": "turkey"
+  },
+  {
+   "name": "India",
+   "slug": "india"
+  },
+  {
+   "name": "Japan",
+   "slug": "japan"
+  },
+  {
+   "name": "South Africa",
+   "slug": "south-africa"
+  },
+  {
+   "name": "Sweden",
+   "slug": "sweden"
+  },
+  {
+   "name": "UAE",
+   "slug": "uae"
+  }
+ ],
+ "topShare": 0.915,
+ "source": "HM Revenue & Customs, uktradeinfo",
+ "licence": "Open Government Licence v3.0"
+}
