@@ -7,15 +7,16 @@
  *
  * Fails (exit 1) unless every check holds:
  *   - no request to the HMRC API, ever (and none blocked either)
- *   - the grid came from modules/htmx 1.81.0; no watermark; no console errors
+ *   - the grid came from modules/htmx 1.83.0; no watermark; no console errors
  *   - the rendered table hydrated: grid rows equal the <tr> count of the month's fragment
  *   - the tiles agree with sums recomputed from that fragment
  *   - sort and filter work on the hydrated grid
  *   - the month select swaps the table (and re-hydrates), the summary rides along out of band,
  *     the trend has 48 points
  *   - a partner filter swaps in that partner's trend fragment
- *   - browser back restores the previous month's grid, live, and forward the next; the sort that
- *     back does not carry (F-1584-2) is printed as a GAP line rather than hidden
+ *   - browser back restores the previous month's grid, live, with the sort set before leaving it
+ *     kept; forward restores the next month; htmx's default history cache does both (no
+ *     htmx:historyCacheError), and its sessionStorage use stays under quota
  *
  * Needs Chrome and puppeteer-core; set CHROME and PUPPETEER to point at them.
  */
@@ -121,8 +122,8 @@ try {
     moduleScript: [...document.scripts].map((x) => x.src).filter((x) => x.includes('lattice-grid@')),
   }));
   numbers.version = lib.version;
-  check(lib.version === '1.81.0', 'LatticeGridHtmx.version() is 1.81.0', lib.version);
-  check(lib.moduleScript.some((x) => x.includes('@1.81.0/modules/htmx.min.js')) && !lib.moduleScript.some((x) => /lattice-grid\.min\.js/.test(x)),
+  check(lib.version === '1.83.0', 'LatticeGridHtmx.version() is 1.83.0', lib.version);
+  check(lib.moduleScript.some((x) => x.includes('@1.83.0/modules/htmx.min.js')) && !lib.moduleScript.some((x) => /lattice-grid\.min\.js/.test(x)),
     'the grid came from modules/htmx, not the core bundle');
   check(lib.watermarks === 0, 'no .lat-watermark', String(lib.watermarks));
   numbers.trendPoints = s.trendPoints;
@@ -172,20 +173,36 @@ try {
   check(s.tradeRows === thirdFacts.tr, `swap to ${third}: hydrated rows equal its <tr> count`, `${s.tradeRows} vs ${thirdFacts.tr}`);
   numbers.swaps.push({ month: third, rows: s.tradeRows, tr: thirdFacts.tr });
 
-  /* 4. Back and forward: the previous month's grid comes back live (htmx history, reloading on a miss).
-     The sort does not: see F-1584-2 in the README. That is checked as a gap, so a grid release that fixes it shows up here. */
-  const histCfg = await page.evaluate(() => ({ size: htmx.config.historyCacheSize, refresh: htmx.config.refreshOnHistoryMiss }));
-  check(histCfg.size === 0 && histCfg.refresh === true, 'htmx history reloads on back (snapshot cache off, as the README explains)', JSON.stringify(histCfg));
+  /* 4. Back and forward: grid 1.83.0's snapshot-size fix (BACKLOG-1597) keeps a hydrated month's
+     history snapshot under sessionStorage's quota, so the page no longer overrides htmx's history
+     config (F-1584-2, fixed). Back restores the previous month's grid live, sort kept; forward the
+     next. No htmx:historyCacheError, and sessionStorage stays under quota throughout. */
+  await page.evaluate(() => {
+    window.__historyCacheErrors = [];
+    document.body.addEventListener('htmx:historyCacheError', (e) => window.__historyCacheErrors.push(e.detail));
+  });
+  const histCfg = await page.evaluate(() => ({
+    size: htmx.config.historyCacheSize, refresh: htmx.config.refreshOnHistoryMiss, meta: !!document.querySelector('meta[name="htmx-config"]'),
+  }));
+  check(!histCfg.meta && histCfg.size > 0, 'no htmx-config override; history caching is on by default', JSON.stringify(histCfg));
   await page.goBack({ waitUntil: 'load' });
   s = await until((x) => x.tradeMonth === second && x.tradeRows > 0 && x.trendPoints === 48, `back to ${second}`);
   const backSort = await page.evaluate(() => JSON.stringify(window.__tradeHtmx.trade.sort.get()));
   numbers.back = { url: s.url, month: s.tradeMonth, rows: s.tradeRows, select: s.month, sort: backSort };
   check(s.tradeRows === secondFacts.tr && s.month === second && s.live === 2, `back restores the ${second} grid, live`, JSON.stringify(numbers.back));
-  console.log(`${backSort.includes('balance') ? 'NOTE F-1584-2 looks fixed: the sort survived back' : 'GAP  F-1584-2: the sort set before leaving the month is not restored'} (${backSort})`);
+  check(backSort.includes('balance'), 'F-1584-2 fixed: the sort set before leaving the month is kept on back', backSort);
   await page.goForward({ waitUntil: 'load' });
   s = await until((x) => x.tradeMonth === third && x.tradeRows > 0 && x.trendPoints === 48, `forward to ${third}`);
   numbers.forward = { url: s.url, month: s.tradeMonth, rows: s.tradeRows };
   check(s.tradeRows === thirdFacts.tr && s.live === 2, `forward restores the ${third} grid, live`, JSON.stringify(numbers.forward));
+  const cacheErrors = await page.evaluate(() => window.__historyCacheErrors);
+  check(cacheErrors.length === 0, 'no htmx:historyCacheError on back or forward', JSON.stringify(cacheErrors));
+  const sessionBytes = await page.evaluate(() => Object.keys(sessionStorage).reduce(
+    (n, k) => n + (k.length + (sessionStorage.getItem(k) || '').length) * 2, 0));
+  numbers.sessionStorageBytes = sessionBytes;
+  // Chrome's per-origin sessionStorage quota is ~10MB; no QuotaExceededError and no console error
+  // above already proves the ten cached entries (htmx's default historyCacheSize) fit.
+  check(sessionBytes < 10 * 1024 * 1024, 'htmx history sessionStorage stays under quota', `${sessionBytes} bytes`);
 
   /* 5. The no-API rule, and a clean console. */
   numbers.requests = requests.length;

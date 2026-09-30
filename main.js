@@ -11,12 +11,21 @@
   const select = $('#month');
   const gridIn = (sel) => { const host = gridElementsWithin($(sel))[0]; return host ? host.__lattice : null; };
   const money = { type: 'currency', currency: 'GBP', decimals: 0 };
-  const bound = { trade: null, summary: null, kpi: null, charts: [], trend: null, partner: null };
+  const bound = { trade: null, summary: null, kpi: null, charts: null, trend: null, partner: null };
   let top = []; // the partners that have their own trend fragment, from fragments/index.json
+  let prev = {}; // the previous month's values by series key; reassigned on every bind, read by the compute below
 
-  /** The month's tiles and three charts, bound to the month grid that has just hydrated. */
+  /** The month's tiles and three charts: created once, then rebound to whichever grid hydrates #trade
+      thereafter (the select, and now also back/forward - grid 1.83.0's snapshot-size fix, BACKLOG-1597).
+      A hydrated table's id is not carried across a swap, so the module cannot rebind on its own; this
+      manual rebind() call is what keeps the views live instead of rebuilding them on every swap. */
   function bindMonth(grid) {
-    const prev = JSON.parse(($('#trade .previous-month') || {}).textContent || '{}');
+    prev = JSON.parse(($('#trade .previous-month') || {}).textContent || '{}');
+    if (bound.kpi) {
+      bound.kpi.rebind(grid);
+      bound.charts.forEach((c) => c.rebind(grid));
+      return;
+    }
     bound.kpi = createKPI($('#tiles'), {
       grid, rowKey: '__row', fields: ['value', 'balance', 'flow', 'partner', 'chapter'], columns: 5,
       tiles: [
@@ -46,16 +55,11 @@
     ];
   }
 
-  /** The trend line, bound to the summary grid that has just hydrated. */
+  /** The trend line: created once, then rebound to whichever grid hydrates #summary thereafter. */
   function bindTrend(grid) {
+    if (bound.trend) { bound.trend.rebind(grid); return; }
     bound.trend = createChart({ container: $('#chart-trend'), grid, type: 'line', x: 'month', y: 'value', series: 'flow',
       title: 'Month by month', axis: { x: { scale: 'band', labels: true, rotate: 'auto', every: 3 } }, legend: { position: 'bottom' } });
-  }
-
-  /** Let go of the views bound to grids htmx is about to swap out, before modules/htmx destroys those grids. */
-  function release(month, trend) {
-    if (month && bound.kpi) { bound.kpi.destroy(); bound.charts.forEach((c) => c.destroy()); bound.kpi = null; bound.charts = []; bound.trade = null; }
-    if (trend && bound.trend) { bound.trend.destroy(); bound.trend = null; bound.summary = null; }
   }
 
   /** A partner filter on the table narrows the trend, when that partner has a saved trend fragment. */
@@ -73,18 +77,18 @@
     htmx.ajax('GET', `fragments/${select.value}/${match ? `summary-${match.slug}.html` : 'summary.html'}`, { target: '#summary', swap: 'innerHTML' });
   }
 
-  /** Bind whatever grid is live and not yet bound. */
+  /** Bind whatever grid is live and not yet bound to: the select's swap, and now also back/forward,
+      which re-hydrate through htmx's history cache rather than reloading the page. */
   function sync() {
     const trade = gridIn('#trade');
     if (trade && trade !== bound.trade) {
-      release(true, false);
       bound.trade = trade;
       bound.partner = null;
       select.value = $('#trade .previous-month')?.dataset.for || select.value;
       bindMonth(trade);
     }
     const summary = gridIn('#summary');
-    if (summary && summary !== bound.summary) { release(false, true); bound.summary = summary; bindTrend(summary); }
+    if (summary && summary !== bound.summary) { bound.summary = summary; bindTrend(summary); }
   }
 
   /* The select's hx-get names the newest month; point it at the chosen one, and push ?month= rather than the fragment's address. */
@@ -93,9 +97,6 @@
     e.detail.path = `fragments/${select.value}/table.html`;
     select.setAttribute('hx-push-url', `?month=${select.value}`);
   });
-  document.body.addEventListener('htmx:beforeSwap', (e) => release(e.detail.target.id === 'trade', e.detail.target.id === 'summary'));
-  document.body.addEventListener('htmx:oobBeforeSwap', (e) => release(false, e.detail.target.id === 'summary'));
-  document.body.addEventListener('htmx:historyCacheHit', () => release(true, true));
   // On document, after modules/htmx's own listeners (also on document, added first), so the grids exist by then.
   document.addEventListener('htmx:load', sync);
   document.addEventListener('htmx:historyRestore', sync);

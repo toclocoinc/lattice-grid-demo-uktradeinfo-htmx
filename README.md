@@ -9,7 +9,7 @@ hydrates whatever table arrives into a live grid that tiles and charts bind to.
 
 | | |
 | --- | --- |
-| Grid | [@toclocoinc/lattice-grid](https://www.npmjs.com/package/@toclocoinc/lattice-grid) 1.81.0, `modules/htmx`, `modules/charts`, `modules/kpi`, by `<script>` tag from jsDelivr |
+| Grid | [@toclocoinc/lattice-grid](https://www.npmjs.com/package/@toclocoinc/lattice-grid) 1.83.0, `modules/htmx`, `modules/charts`, `modules/kpi`, by `<script>` tag from jsDelivr |
 | htmx | 2.0.11, by `<script>` tag from unpkg |
 | Sibling | [lattice-grid-demo-uktradeinfo](https://github.com/toclocoinc/lattice-grid-demo-uktradeinfo), the same data kept in the browser |
 | Data | [HM Revenue & Customs, uktradeinfo](https://www.uktradeinfo.com/), Open Government Licence v3.0 |
@@ -67,13 +67,17 @@ the copy was taken.
   chosen month's fragment and pushes `?month=` rather than the fragment's
   address. The fragment carries the whole-window summary as an out-of-band
   swap (`hx-swap-oob`), so one request moves the table and the trend table.
-- **Tiles and charts survive the swap by being rebuilt, not kept.** A swapped
-  month is a new grid instance; the old one is destroyed by the module. So
-  `main.js` listens for `htmx:load` on `document` (after the module's own
-  listener, so the grid already exists), finds the live grid with
-  `gridElementsWithin`, and binds a KPI panel and three charts to it. Before a
-  swap (`htmx:beforeSwap`, `htmx:oobBeforeSwap`) it destroys the views bound to
-  the grid that is about to go. That is the whole of the wiring: 113 lines.
+- **Tiles and charts survive the swap by being rebound, not rebuilt.** A
+  swapped month is a new grid instance; the old one is destroyed by the
+  module. So `main.js` listens for `htmx:load` on `document` (after the
+  module's own listener, so the grid already exists), finds the live grid
+  with `gridElementsWithin`, and on the first hydration creates a KPI panel
+  and three charts against it. On every later swap - the select, or now also
+  back and forward - it calls `chart.rebind(grid)` / `kpi.rebind(grid)`
+  instead: a hydrated table's id is not carried across a swap, so the module
+  cannot rebind the views on its own, and this manual call is what keeps them
+  live rather than rebuilding them from scratch each time. That is the whole
+  of the wiring: 114 lines.
 - **The change tile** compares only the chapter, partner and flow combinations
   present in both months. The fragment carries the previous month's values by
   that key in a `<script class="previous-month">`, so the tile needs no extra
@@ -87,17 +91,17 @@ the copy was taken.
 
 ## What this page cannot do
 
-These are gaps in the grid at 1.81.0, reported rather than worked around.
+These are gaps in the grid at 1.83.0, reported rather than worked around.
 
-- **Back and forward reload rather than restore (F-1584-2).** The htmx module's
-  history hooks save a grid's state into htmx's snapshot and rebuild grids
-  marked `data-lattice-grid` on restore. A grid hydrated from a `<table>` cannot
-  be rebuilt: the table was consumed, and the grid's host element carries no
-  marker, so a restored snapshot is a picture of a grid, not a grid. The page
-  therefore turns htmx's snapshot cache off (`historyCacheSize: 0`,
-  `refreshOnHistoryMiss: true`): back and forward reload the page on the month
-  in the address and the grid is live, but a sort or filter set before leaving
-  a month is not carried back.
+- **Back and forward reload rather than restore, fixed.** Until grid 1.82.0
+  this page turned htmx's snapshot cache off (`historyCacheSize: 0`,
+  `refreshOnHistoryMiss: true`, F-1584-2): a grid hydrated from a `<table>`
+  could not be rebuilt from htmx's saved snapshot, because the table was
+  consumed and the grid's host carried no `data-lattice-grid` marker for
+  htmx to rebuild against. Grid 1.83.0's snapshot-size fix (BACKLOG-1597)
+  keeps a hydrated month's snapshot under sessionStorage's quota and restores
+  it as a live grid, so the meta override is gone and back/forward now use
+  htmx's default history cache.
 - **Chapter codes lose their leading zero (F-1584-1).** Hydration turns cell
   text that reads as a number into a number before a `data-type="text"` on the
   `<th>` is applied, so chapter `01` shows as `1`. The chapter name beside it

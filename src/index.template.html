@@ -13,13 +13,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@toclocoinc/lattice-grid@1.81.0/lattice-grid.min.css?v=20260930c"
       integrity="sha384-Go3jt4mj2i9Bfobiz/+RC+MZyAbdqf2PGpHKdeIeUJe35Xg5L3waCxfoG+ugFADT" crossorigin="anonymous" />
     <link rel="stylesheet" href="./styles.css?v=20260930c" />
-    <!--
-      Back and forward reload the page on the month in the address rather than restoring htmx's snapshot.
-      modules/htmx 1.81.0 cannot rebuild a grid it hydrated from a <table> out of that snapshot (the table is
-      gone and the grid's host carries no data-lattice-grid), so a restored snapshot would be a picture of a
-      grid, not a grid. The README says so under "What this page cannot do".
-    -->
-    <meta name="htmx-config" content='{"historyCacheSize":0,"refreshOnHistoryMiss":true}' />
+    <!-- htmx's default history config: grid 1.83.0's snapshot-size fix (BACKLOG-1597) keeps a hydrated
+         month's snapshot under quota, so back and forward now restore the cached page rather than
+         reloading it. No override needed; see the README under "What this page cannot do". -->
     <!-- htmx, from its own CDN, pinned. -->
     <script src="https://unpkg.com/htmx.org@2.0.11/dist/htmx.min.js"
       integrity="sha384-2OatzQy1H+Zd/IIrjr1TcuDGqLXeHhbooAyJY1KdQMKnr4LZ22k31GBLdYKHmVjg" crossorigin="anonymous"></script>
@@ -70,8 +66,8 @@
 
     <footer class="foot">
       <p class="limits">
-        What this page cannot do yet, with grid 1.81.0: back and forward reload the month in the address, so a sort or
-        filter you set is not carried back; chapters 01 to 09 show as 1 to 9; the table has no group subtotals.
+        What this page cannot do yet, with grid 1.83.0: chapters 01 to 09 show as 1 to 9; the table has no
+        group subtotals.
         <a href="https://github.com/toclocoinc/lattice-grid-demo-uktradeinfo-htmx#what-this-page-cannot-do">Why</a>.
       </p>
       <p>
@@ -81,7 +77,7 @@
         Values are the <!--PARTNER_COUNT--> largest partners only, so they sit below HMRC's headline totals.
       </p>
       <p>
-        Built with <a href="https://www.latticegrid.dev">Lattice Grid</a> 1.81.0 (<code>modules/htmx</code>) and htmx 2.0.11.
+        Built with <a href="https://www.latticegrid.dev">Lattice Grid</a> 1.83.0 (<code>modules/htmx</code>) and htmx 2.0.11.
         <a href="https://github.com/toclocoinc/lattice-grid-demo-uktradeinfo-htmx">Source</a> ·
         <a href="https://toclocoinc.github.io/lattice-grid-demo-uktradeinfo/">the same data kept in the browser</a>.
       </p>
@@ -92,13 +88,13 @@
       autoInit) and registers the htmx lifecycle listeners as it loads, so it is loaded instead of the core
       bundle, not beside it. charts extends the LatticeGrid global; kpi leaves LatticeGridKPI.
     -->
-    <script src="https://cdn.jsdelivr.net/npm/@toclocoinc/lattice-grid@1.82.0/modules/htmx.min.js?v=20260930c"
-      integrity="sha384-nGTzSLgrSrLUDLh7mCVvb67EHr0NwVqbKS/9dOqMmQmOJiqnaIwoe0fG5zBt1C3j" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@toclocoinc/lattice-grid@1.82.0/modules/charts.min.js?v=20260930c"
-      integrity="sha384-QbzeZHahUXWBYWlGtCrQXPpC0i8h+/gjm6/f3MgKtT3InvicvfYkRcdBYhGHOge/" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@toclocoinc/lattice-grid@1.82.0/modules/kpi.min.js?v=20260930c"
-      integrity="sha384-8Zbx46xTBd4HVS6wWb/QCg059WmqXHnPgrCkMEAM2RNDcfI8DLEGjTJtc1x6h0cm" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@toclocoinc/lattice-grid@1.83.0/modules/htmx.min.js?v=20261001a"
+      integrity="sha384-Lxaj/Xtncocd0TLRgTo2o2CuA3WXQ0iejQe5HKMBt5ECZIs4yxssb65QYyQdsvLM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@toclocoinc/lattice-grid@1.83.0/modules/charts.min.js?v=20261001a"
+      integrity="sha384-UR0iDgcoa+WJN7cKj05LEj3LsG/EX3SmCK1g2ifbgswTQsRpvHZTksv9uEiVZjFE" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@toclocoinc/lattice-grid@1.83.0/modules/kpi.min.js?v=20261001a"
+      integrity="sha384-2ekA2zck3JStjKWqfkqx9QxMm++ntqzAuzkX20Y3Iiyi43+XimyfBh/4Yz4E5UUA" crossorigin="anonymous"></script>
     <script src="./src/licence.js?v=20260930c"></script>
-    <script src="./main.js?v=20260930c"></script>
+    <script src="./main.js?v=20261001a"></script>
   </body>
 </html>
