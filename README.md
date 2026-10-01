@@ -9,7 +9,7 @@ hydrates whatever table arrives into a live grid that tiles and charts bind to.
 
 | | |
 | --- | --- |
-| Grid | [@toclocoinc/lattice-grid](https://www.npmjs.com/package/@toclocoinc/lattice-grid) 1.83.0, `modules/htmx`, `modules/charts`, `modules/kpi`, by `<script>` tag from jsDelivr |
+| Grid | [@toclocoinc/lattice-grid](https://www.npmjs.com/package/@toclocoinc/lattice-grid) 1.83.1, `modules/htmx`, `modules/charts`, `modules/kpi`, by `<script>` tag from jsDelivr |
 | htmx | 2.0.11, by `<script>` tag from unpkg |
 | Sibling | [lattice-grid-demo-uktradeinfo](https://github.com/toclocoinc/lattice-grid-demo-uktradeinfo), the same data kept in the browser |
 | Data | [HM Revenue & Customs, uktradeinfo](https://www.uktradeinfo.com/), Open Government Licence v3.0 |
