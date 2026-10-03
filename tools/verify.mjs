@@ -7,7 +7,7 @@
  *
  * Fails (exit 1) unless every check holds:
  *   - no request to the HMRC API, ever (and none blocked either)
- *   - the grid came from modules/htmx 1.86.1; no watermark; no console errors
+ *   - the grid came from modules/htmx 1.86.2; no watermark; no console errors
  *   - the rendered table hydrated: grid rows equal the <tr> count of the month's fragment
  *   - the tiles agree with sums recomputed from that fragment
  *   - sort and filter work on the hydrated grid
@@ -122,8 +122,8 @@ try {
     moduleScript: [...document.scripts].map((x) => x.src).filter((x) => x.includes('lattice-grid@')),
   }));
   numbers.version = lib.version;
-  check(lib.version === '1.86.1', 'LatticeGridHtmx.version() is 1.86.1', lib.version);
-  check(lib.moduleScript.some((x) => x.includes('@1.86.1/modules/htmx.min.js')) && !lib.moduleScript.some((x) => /lattice-grid\.min\.js/.test(x)),
+  check(lib.version === '1.86.2', 'LatticeGridHtmx.version() is 1.86.2', lib.version);
+  check(lib.moduleScript.some((x) => x.includes('@1.86.2/modules/htmx.min.js')) && !lib.moduleScript.some((x) => /lattice-grid\.min\.js/.test(x)),
     'the grid came from modules/htmx, not the core bundle');
   check(lib.watermarks === 0, 'no .lat-watermark', String(lib.watermarks));
   numbers.trendPoints = s.trendPoints;
