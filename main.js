@@ -59,7 +59,7 @@
   function bindTrend(grid) {
     if (bound.trend) { bound.trend.rebind(grid); return; }
     bound.trend = createChart({ container: $('#chart-trend'), grid, type: 'line', x: 'month', y: 'value', series: 'flow',
-      title: 'Month by month', axis: { x: { scale: 'band', labels: true, rotate: 'auto', every: 6 } }, legend: { position: 'bottom' } });
+      title: 'Month by month', axis: { x: { scale: 'band', labels: true, rotate: 'auto', every: 3 } }, legend: { position: 'bottom' } });
   }
 
   /** A partner filter on the table narrows the trend, when that partner has a saved trend fragment. */
