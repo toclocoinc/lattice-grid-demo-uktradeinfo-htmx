@@ -10,9 +10,8 @@
     />
     <link rel="icon" href="data:," />
     <!-- index.html is written by tools/render-fragments.mjs from src/index.template.html. Edit the template. -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@toclocoinc/lattice-grid@1.86.7/lattice-grid.min.css?v=20261005a"
-      integrity="sha384-bP2tRy+qPdagPq/4CKyjoyftz6bWIFsiCzV6pvEHOeu1Io190MU7Nn5JTcyjR+PS" crossorigin="anonymous" />
-    <link rel="stylesheet" href="./styles.css?v=20261005a" />
+    <link rel="stylesheet" href="https://cdn.latticegrid.dev/lattice-grid@1.111.7/lattice-grid.min.css?v=20261022a" />
+    <link rel="stylesheet" href="./styles.css?v=20261022a" />
     <!-- htmx's default history config: grid 1.83.0's snapshot-size fix (BACKLOG-1597) keeps a hydrated
          month's snapshot under quota, so back and forward now restore the cached page rather than
          reloading it. No override needed; see the README under "What this page cannot do". -->
@@ -5349,7 +5348,7 @@
         Values are the 30 largest partners only, so they sit below HMRC's headline totals.
       </p>
       <p>
-        Built with <a href="https://www.latticegrid.dev/docs/">Lattice Grid</a> 1.86.7 (<code>modules/htmx</code>) and htmx 2.0.11.
+        Built with <a href="https://www.latticegrid.dev/docs/">Lattice Grid</a> 1.111.7 (<code>modules/htmx</code>) and htmx 2.0.11.
         <a href="https://github.com/toclocoinc/lattice-grid-demo-uktradeinfo-htmx">Source</a> ·
         <a href="https://toclocoinc.github.io/lattice-grid-demo-uktradeinfo/">the same data kept in the browser</a>.
       </p>
@@ -5360,13 +5359,10 @@
       autoInit) and registers the htmx lifecycle listeners as it loads, so it is loaded instead of the core
       bundle, not beside it. charts extends the LatticeGrid global; kpi leaves LatticeGridKPI.
     -->
-    <script src="https://cdn.jsdelivr.net/npm/@toclocoinc/lattice-grid@1.86.7/modules/htmx.min.js?v=20261005a"
-      integrity="sha384-EwEQPrFBvdUqt7mFet3uRSEYtrmXuI5sATJpslMnt9tp4znXlkNsox7Xq727d6Nj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@toclocoinc/lattice-grid@1.86.7/modules/charts.min.js?v=20261005a"
-      integrity="sha384-DR350X93bzdcEwzlDDyLbiTzIIrv4YhmqgM0weGJiILI1PdAyQdrqsPUjcit7z3P" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@toclocoinc/lattice-grid@1.86.7/modules/kpi.min.js?v=20261005a"
-      integrity="sha384-JN5dDd44ptNb8DI2/wG1muUCovjub7knYcRIx7hOaXZXvJHEz7f+7E8Dk78sx415" crossorigin="anonymous"></script>
-    <script src="./src/licence.js?v=20261005a"></script>
-    <script src="./main.js?v=20261005a"></script>
+    <script src="https://cdn.latticegrid.dev/lattice-grid@1.111.7/modules/htmx.min.js?v=20261022a"></script>
+    <script src="https://cdn.latticegrid.dev/lattice-grid@1.111.7/modules/charts.min.js?v=20261022a"></script>
+    <script src="https://cdn.latticegrid.dev/lattice-grid@1.111.7/modules/kpi.min.js?v=20261022a"></script>
+    <script src="./src/licence.js?v=20261022a"></script>
+    <script src="./main.js?v=20261022a"></script>
   </body>
 </html>
