@@ -7,7 +7,7 @@
  *
  * Fails (exit 1) unless every check holds:
  *   - no request to the HMRC API, ever (and none blocked either)
- *   - the grid came from modules/htmx 1.111.7; no watermark; no console errors
+ *   - the grid came from modules/htmx 1.111.8; no watermark; no console errors
  *   - the rendered table hydrated: grid rows equal the <tr> count of the month's fragment
  *   - the tiles agree with sums recomputed from that fragment
  *   - sort and filter work on the hydrated grid
@@ -122,8 +122,8 @@ try {
     moduleScript: [...document.scripts].map((x) => x.src).filter((x) => x.includes('lattice-grid@')),
   }));
   numbers.version = lib.version;
-  check(lib.version === '1.111.7', 'LatticeGridHtmx.version() is 1.111.7', lib.version);
-  check(lib.moduleScript.some((x) => x.includes('@1.111.7/modules/htmx.min.js')) && !lib.moduleScript.some((x) => /lattice-grid\.min\.js/.test(x)),
+  check(lib.version === '1.111.8', 'LatticeGridHtmx.version() is 1.111.8', lib.version);
+  check(lib.moduleScript.some((x) => x.includes('@1.111.8/modules/htmx.min.js')) && !lib.moduleScript.some((x) => /lattice-grid\.min\.js/.test(x)),
     'the grid came from modules/htmx, not the core bundle');
   check(lib.watermarks === 0, 'no .lat-watermark', String(lib.watermarks));
   numbers.trendPoints = s.trendPoints;
@@ -173,7 +173,7 @@ try {
   check(s.tradeRows === thirdFacts.tr, `swap to ${third}: hydrated rows equal its <tr> count`, `${s.tradeRows} vs ${thirdFacts.tr}`);
   numbers.swaps.push({ month: third, rows: s.tradeRows, tr: thirdFacts.tr });
 
-  /* 4. Back and forward: grid 1.83.0's snapshot-size fix (BACKLOG-1597) keeps a hydrated month's
+  /* 4. Back and forward: grid 1.111.8's snapshot-size fix (BACKLOG-1597) keeps a hydrated month's
      history snapshot under sessionStorage's quota, so the page no longer overrides htmx's history
      config (F-1584-2, fixed). Back restores the previous month's grid live, sort kept; forward the
      next. No htmx:historyCacheError, and sessionStorage stays under quota throughout. */
